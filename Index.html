@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Un detalle para ti 💗</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #fcf8f2;
+            color: #4a4a4a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        h1 {
+            font-size: 1.8rem;
+            color: #d16680;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        /* --- ESTILOS PANTALLA 1: EL GLOBO --- */
+        #game-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        .counter-text {
+            font-size: 1rem;
+            color: #8a8a8a;
+            margin-top: 15px;
+        }
+        .balloon-container {
+            position: relative;
+            width: 200px;
+            height: 300px;
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .balloon {
+            width: 130px;
+            height: 160px;
+            background: #2575fc;
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+            transition: transform 0.1s ease;
+            box-shadow: inset -10px -10px 20px rgba(0,0,0,0.15), 8px 15px 20px rgba(0,0,0,0.1);
+        }
+        /* Brillo del globo */
+        .balloon::before {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 35px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 50%;
+            top: 20px;
+            left: 25px;
+            transform: rotate(-25px);
+        }
+        /* Nudo del globo */
+        .balloon-knot {
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 12px solid #2575fc;
+        }
+        /* Hilo del globo */
+        .string {
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            width: 2px;
+            height: 80px;
+            background: #a1a1a1;
+            transform-origin: top center;
+            animation: swing 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        @keyframes swing {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(4deg); }
+        }
+        .shake {
+            animation: shake 0.1s ease-in-out infinite !important;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) scale(var(--scale, 1)); }
+            25% { transform: translateX(-5px) scale(var(--scale, 1)); }
+            75% { transform: translateX(5px) scale(var(--scale, 1)); }
+        }
+
+        /* --- ESTILOS PANTALLA 2: LA SORPRESA --- */
+        #surprise-screen {
+            display: none;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            flex-direction: column;
+            align-items: center;
+        }
+        video {
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            margin-bottom: 25px;
+            background-color: #000;
+        }
+        .card {
+            background: white;
+            padding: 25px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(221, 150, 169, 0.2);
+            width: 100%;
+            border: 1px solid #f3e1e6;
+        }
+        .gift-image {
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        .signature {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #d16680;
+            margin-bottom: 15px;
+        }
+        .message {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #5a5a5a;
+            white-space: pre-line;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- PANTALLA 1: EL GLOBO -->
+        <div id="game-screen">
+            <h1>Magui te envío un detalle</h1>
+            <div class="balloon-container" id="balloon-trigger">
+                <div class="balloon" id="my-balloon">
+                    <div class="balloon-knot"></div>
+                    <div class="string"></div>
+                </div>
+            </div>
+            <p class="counter-text">¡Presiona el globo para tronarlo! <br><strong id="clicks-left">21</strong> clicks restantes</p>
+        </div>
+
+        <!-- PANTALLA 2: LA SORPRESA -->
+        <div id="surprise-screen">
+            <!-- Archivo de Video Referenciado -->
+            <video id="surprise-video" controls playsinline>
+                <source src="video.mp4" type="video/mp4">
+                Tu navegador no soporta videos.
+            </video>
+
+            <div class="card">
+                <!-- Archivo de Imagen Referenciado -->
+                <img src="Diseño sin título.png" alt="Foto especial" class="gift-image">
+                
+                <div class="signature">De Magui 💗</div>
+                <p class="message">Happy birthday tonto,
+te quiero mucho y espero
+te diviertas en este día,
+ya sé que para ti es un día normal,
+pero para mí sí es un día especial
+porque tú te convertiste en alguien
+especial para mí. 💖
+
+Deseo que te la pases bonitooo.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let clicksLeft = 21;
+        const balloonTrigger = document.getElementById('balloon-trigger');
+        const balloon = document.getElementById('my-balloon');
+        const clicksText = document.getElementById('clicks-left');
+        const gameScreen = document.getElementById('game-screen');
+        const surpriseScreen = document.getElementById('surprise-screen');
+        const video = document.getElementById('surprise-video');
+
+        let scale = 1;
+
+        balloonTrigger.addEventListener('click', () => {
+            if (clicksLeft <= 0) return;
+
+            clicksLeft--;
+            clicksText.innerText = clicksLeft;
+
+            // El globo crece un poco y vibra al clickearlo
+            scale += 0.025; 
+            balloon.style.setProperty('--scale', scale);
+            balloon.style.transform = `scale(${scale})`;
+            
+            balloon.classList.add('shake');
+            setTimeout(() => {
+                balloon.classList.remove('shake');
+            }, 100);
+
+            // Cuando llega a cero... ¡BOOM!
+            if (clicksLeft === 0) {
+                // Pequeña pausa para simular la explosión
+                balloon.style.display = 'none';
+                
+                setTimeout(() => {
+                    gameScreen.style.display = 'none';
+                    surpriseScreen.style.display = 'flex';
+                    
+                    // Efecto Fade-in suave para la sorpresa
+                    setTimeout(() => {
+                        surpriseScreen.style.opacity = '1';
+                        // Intenta reproducir el video automáticamente
+                        video.play().catch(error => {
+                            console.log("Autoplay bloqueado por el navegador, requiere interacción del usuario.");
+                        });
+                    }, 50);
+                }, 300);
+            }
+        });
+    </script>
+</body>
+</html>
